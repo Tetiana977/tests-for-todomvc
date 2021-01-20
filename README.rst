@@ -1,0 +1,1 @@
+This project includes End-to-End test for proof of concept web-application TodoMVC.

@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "tests-for-todomvc"
+version = "0.1.0"
+description = ""
+authors = ["Tetiana977 <tatjana.zorenko@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9.0a4"
+selene = {version = "^1.0.2", allow-prereleases = true}
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
