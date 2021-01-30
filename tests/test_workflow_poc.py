@@ -1,9 +1,8 @@
-from selene import have
 from selene.support.shared import browser
-from selene.support.shared.jquery_style import s, ss
+from tests_for_todomvc.pages import actions, browser
 
 
-def test_todos_management():
+'''def test_todos_management():
     browser.open('https://todomvc4tasj.herokuapp.com')
     browser.should(have.js_returned(True, "return $._data($("
                                           "'#clear-completed')[0],"
@@ -31,4 +30,24 @@ def test_todos_management():
     ss('#todo-list>li').element_by(have.exact_text('a edited'))\
         .element('.toggle').click()
     s('#clear-completed').click()
-    ss('#todo-list>li').should(have.exact_texts('b'))
+    ss('#todo-list>li').should(have.exact_texts('b'))'''
+
+
+def test_todos_management_refactor():
+    browser.open_application()
+
+    actions.add('a')
+    actions.add('b')
+    actions.add('c')
+    actions.should_be_text('a', 'b', 'c')
+
+    actions.cancel_editing('c', 'c to be canceled')
+
+    actions.delete('c')
+    actions.should_be_text('a', 'b')
+
+    actions.edit('a', 'a edited')
+
+    actions.completed('a edited')
+    actions.clear_completed()
+    actions.should_be_text('b')
