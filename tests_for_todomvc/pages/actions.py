@@ -2,36 +2,38 @@ from selene import have
 from selene.support.shared.jquery_style import s, ss
 
 todos = ss('#todo-list>li')
-edit_field = todos.element_by(have.css_class('editing')).element('.edit')
 
 
-def add(text: str):
-    s('#new-todo').type(text).press_enter()
+def add(*names):
+    for name in names:
+        s('#new-todo').type(name).press_enter()
 
 
-def cancel_editing(text: str, new_text: str):
-    todos.element_by(have.exact_text(text)).double_click()
-    return edit_field.set_value(new_text).press_escape()
+def start_editing(name, new_text):
+    todos.element_by(have.exact_text(name)).double_click()
+    return todos.element_by(have.css_class('editing')).element('.edit') \
+        .set_value(new_text)
 
 
-def edit(text: str, new_text: str):
-    todos.element_by(have.exact_text(text)).double_click()
-    return edit_field.set_value(new_text).press_enter()
+def cancel_editing(name, new_text):
+    start_editing(name, new_text).press_escape()
 
 
-def delete(text: str):
-    todos.element_by(have.exact_text(text)).element('.destroy') \
-        .click()
+def edit(name, new_text):
+    start_editing(name, new_text).press_enter()
 
 
-def completed(text: str):
-    todos.element_by(have.exact_text(text)) \
-        .element('.toggle').click()
+def delete(name):
+    todos.element_by(have.exact_text(name)).element('.destroy').click()
+
+
+def toggle(name):
+    todos.element_by(have.exact_text(name)).element('.toggle').click()
 
 
 def clear_completed():
     s('#clear-completed').click()
 
 
-def should_be_text(*args: str):
-    todos.should(have.exact_texts(*args))
+def list_should_be(*names: str):
+    todos.should(have.exact_texts(*names))
