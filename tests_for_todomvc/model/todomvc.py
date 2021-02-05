@@ -3,11 +3,12 @@ from selene.support.shared.jquery_style import s, ss
 from selene import have
 
 todos = ss('#todo-list>li')
-download_page = "return $._data($('#clear-completed')[0]," \
-              "'events').hasOwnProperty('click')"
 
 
 def visit():
+    download_page = "return $._data($('#clear-completed')[0]," \
+                    "'events').hasOwnProperty('click')"
+
     browser.open('https://todomvc4tasj.herokuapp.com')
     browser.should(have.js_returned(True, download_page))
 
@@ -32,7 +33,7 @@ def edit(name: str, new_text):
 
 
 def delete(name: str):
-    todos.element_by(have.exact_text(name)).element('.destroy').click()
+    todos.element_by(have.exact_text(name)).hover().element('.destroy').click()
 
 
 def toggle(name: str):
