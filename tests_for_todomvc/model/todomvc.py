@@ -1,3 +1,4 @@
+from selene.support.conditions import be
 from selene.support.shared import browser
 from selene.support.shared.jquery_style import s, ss
 from selene import have
@@ -28,8 +29,17 @@ def cancel_editing(name: str, new_text):
     start_editing(name, new_text).press_escape()
 
 
-def edit(name: str, new_text):
+def edit_by_enter(name: str, new_text):
     start_editing(name, new_text).press_enter()
+
+
+def edit_by_tab(name: str, new_text):
+    start_editing(name, new_text).press_tab()
+
+
+def edit_by_click_outside(name: str, new_text):
+    start_editing(name, new_text)
+    return s('footer').click()
 
 
 def delete(name: str):
@@ -40,9 +50,37 @@ def toggle(name: str):
     todos.element_by(have.exact_text(name)).element('.toggle').click()
 
 
+def toggle_all():
+    s('#toggle-all').click()
+
+
 def clear_completed():
     s('#clear-completed').click()
 
 
 def list_should_be(*names: str):
     todos.should(have.exact_texts(*names))
+
+
+def items_left_should_be(amount: int):
+    s('#todo-count strong').should(have.exact_text(str(amount)))
+
+
+def follow_filter_active():
+    s('#filters [href = "#/active"]').click()
+
+
+def follow_filter_completed():
+    s('#filters [href = "#/completed"]').click()
+
+
+def list_should_be_not():
+    todos.filtered_by(be.visible).should(have.size(0))
+
+
+def completed_todos_should_be(*names: str):
+    ss('#todo-list>li.completed').should(have.exact_texts(*names))
+
+
+def active_todos_should_be(*names: str):
+    ss('#todo-list>li:not(.completed)').should(have.exact_texts(*names))

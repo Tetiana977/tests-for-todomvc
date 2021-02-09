@@ -15,7 +15,7 @@ def test_todos_management():
     todomvc.delete('c')
     todomvc.list_should_be('a', 'b')
 
-    todomvc.edit('a', 'a edited')
+    todomvc.edit_by_tab('a', 'a edited')
 
     todomvc.toggle('a edited')
     todomvc.clear_completed()
