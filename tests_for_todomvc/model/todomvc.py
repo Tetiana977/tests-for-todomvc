@@ -4,9 +4,10 @@ from selene.support.shared.jquery_style import s, ss
 from selene import have
 
 todos = ss('#todo-list>li')
+clear_completed_button = s('#clear-completed')
 
 
-class TodoMvcPage:
+class TodoMvcPrecondition:
 
     def visit(self):
         download_page = "return $._data($('#clear-completed')[0]," \
@@ -21,10 +22,26 @@ class TodoMvcPage:
             s('#new-todo').type(name).press_enter()
         return self
 
+    def toggle(self, name: str):
+        todos.element_by(have.exact_text(name)).element('.toggle').click()
+        return self
+
+    def toggle_all(self):
+        s('#toggle-all').click()
+        return self
+
+
+class TodoMvcAct:
+
+    def add(self, *names: str):
+        for name in names:
+            s('#new-todo').type(name).press_enter()
+        return self
+
     def start_editing(self, name: str, new_text):
         todos.element_by(have.exact_text(name)).double_click()
         return todos.element_by(have.css_class('editing')) \
-            .element('.edit').set_value(new_text)
+            .element('.edit').with_(set_value_by_js=True).set_value(new_text)
 
     def cancel_editing(self, name: str, new_text):
         self.start_editing(name, new_text).press_escape()
@@ -37,10 +54,6 @@ class TodoMvcPage:
     def edit_by_tab(self, name: str, new_text):
         self.start_editing(name, new_text).press_tab()
         return self
-
-    def edit_by_click_outside(self, name: str, new_text):
-        self.start_editing(name, new_text)
-        return s('footer').click()
 
     def delete(self, name: str):
         todos.element_by(have.exact_text(name)).hover() \
@@ -56,15 +69,7 @@ class TodoMvcPage:
         return self
 
     def clear_completed(self):
-        s('#clear-completed').click()
-        return self
-
-    def list_should_be(self, *names: str):
-        todos.should(have.exact_texts(*names))
-        return self
-
-    def items_left_should_be(self, amount: int):
-        s('#todo-count strong').should(have.exact_text(str(amount)))
+        clear_completed_button.click()
         return self
 
     def follow_filter_active(self):
@@ -73,6 +78,17 @@ class TodoMvcPage:
 
     def follow_filter_completed(self):
         s('#filters [href = "#/completed"]').click()
+        return self
+
+
+class TodoMvcAssert:
+
+    def list_should_be(self, *names: str):
+        todos.should(have.exact_texts(*names))
+        return self
+
+    def items_left_should_be(self, amount: int):
+        s('#todo-count strong').should(have.exact_text(str(amount)))
         return self
 
     def list_should_be_not(self):
@@ -84,6 +100,17 @@ class TodoMvcPage:
         return self
 
     def active_todos_should_be(self, *names: str):
-        ss('#todo-list>li:not(.completed)').should(have.exact_texts(
-            *names))
+        ss('#todo-list>li:not(.completed)').should(have.exact_texts(*names))
+        return self
+
+    def clear_completed_hidden(self):
+        clear_completed_button.should(be.not_.visible)
+        return self
+
+    def clear_completed_visible(self):
+        clear_completed_button.should(be.visible)
+        return self
+
+    def footer_should_be_hidden(self):
+        s('#footer').should(be.not_.visible)
         return self

@@ -1,22 +1,20 @@
-from selene.support.shared import browser
-from tests_for_todomvc.model import todomvc
+from tests_for_todomvc.model import app_given, app_then, app_when
 
 
 def test_todos_management():
-    browser.config.set_value_by_js = True
 
-    todomvc.visit()
+    app_given.visit()
 
-    todomvc.add('a', 'b', 'c')
-    todomvc.list_should_be('a', 'b', 'c')
+    app_when.add('a', 'b', 'c')
+    app_then.list_should_be('a', 'b', 'c')
 
-    todomvc.cancel_editing('c', 'c to be canceled')
+    app_when.cancel_editing('c', 'c to be canceled')
 
-    todomvc.delete('c')
-    todomvc.list_should_be('a', 'b')
+    app_when.delete('c')
+    app_then.list_should_be('a', 'b')
 
-    todomvc.edit_by_tab('a', 'a edited')
+    app_when.edit_by_tab('a', 'a edited')
 
-    todomvc.toggle('a edited')
-    todomvc.clear_completed()
-    todomvc.list_should_be('b')
+    app_when.toggle('a edited')
+    app_when.clear_completed()
+    app_then.list_should_be('b')
