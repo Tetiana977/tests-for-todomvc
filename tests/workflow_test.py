@@ -1,20 +1,20 @@
-from tests_for_todomvc.model import app_given, app_then, app_when
+from tests_for_todomvc.model import given, then, when
 
 
 def test_todos_management():
 
-    app_given.visit()
+    given.visit()
 
-    app_when.add('a', 'b', 'c')
-    app_then.list_should_be('a', 'b', 'c')
+    when.add('a', 'b', 'c')
+    then.list_is('a', 'b', 'c')
 
-    app_when.cancel_editing('c', 'c to be canceled')
+    when.cancel_editing('c', 'c to be canceled')
 
-    app_when.delete('c')
-    app_then.list_should_be('a', 'b')
+    when.delete('c')
+    then.list_is('a', 'b')
 
-    app_when.edit_by_tab('a', 'a edited')
+    when.edit_by_tab('a', 'a edited')
 
-    app_when.toggle('a edited')
-    app_when.clear_completed()
-    app_then.list_should_be('b')
+    when.toggle('a edited')
+    when.clear_completed()
+    then.list_is('b')

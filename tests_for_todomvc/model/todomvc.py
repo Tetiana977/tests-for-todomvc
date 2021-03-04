@@ -3,14 +3,15 @@ from selene.support.shared import browser
 from selene.support.shared.jquery_style import s, ss
 from selene import have
 
-todos = ss('#todo-list>li')
-clear_completed_button = s('#clear-completed')
 
+class TodoMvc:
 
-class TodoMvcPrecondition:
+    def __init__(self):
+        self.todos = ss('#todo-list>li')
+        self.clear_completed_button = s('#clear-completed')
 
     def visit(self):
-        download_page = "return $._data($('#clear-completed')[0]," \
+        download_page = "return $._data($('#clear-completed')[0],"\
                         "'events').hasOwnProperty('click')"
 
         browser.open('https://todomvc4tasj.herokuapp.com')
@@ -22,25 +23,14 @@ class TodoMvcPrecondition:
             s('#new-todo').type(name).press_enter()
         return self
 
-    def toggle(self, name: str):
-        todos.element_by(have.exact_text(name)).element('.toggle').click()
-        return self
-
-    def toggle_all(self):
-        s('#toggle-all').click()
-        return self
-
-
-class TodoMvcAct:
-
-    def add(self, *names: str):
-        for name in names:
-            s('#new-todo').type(name).press_enter()
+    def visit_with(self, *names: str):
+        self.visit()
+        self.add(*names)
         return self
 
     def start_editing(self, name: str, new_text):
-        todos.element_by(have.exact_text(name)).double_click()
-        return todos.element_by(have.css_class('editing')) \
+        self.todos.element_by(have.exact_text(name)).double_click()
+        return self.todos.element_by(have.css_class('editing')) \
             .element('.edit').with_(set_value_by_js=True).set_value(new_text)
 
     def cancel_editing(self, name: str, new_text):
@@ -56,12 +46,12 @@ class TodoMvcAct:
         return self
 
     def delete(self, name: str):
-        todos.element_by(have.exact_text(name)).hover() \
+        self.todos.element_by(have.exact_text(name)).hover() \
             .element('.destroy').click()
         return self
 
     def toggle(self, name: str):
-        todos.element_by(have.exact_text(name)).element('.toggle').click()
+        self.todos.element_by(have.exact_text(name)).element('.toggle').click()
         return self
 
     def toggle_all(self):
@@ -69,48 +59,35 @@ class TodoMvcAct:
         return self
 
     def clear_completed(self):
-        clear_completed_button.click()
+        self.clear_completed_button.click()
         return self
 
-    def follow_filter_active(self):
-        s('#filters [href = "#/active"]').click()
+    def list_is(self, *names: str):
+        self.todos.should(have.exact_texts(*names))
         return self
 
-    def follow_filter_completed(self):
-        s('#filters [href = "#/completed"]').click()
+    def list_is_empty(self):
+        self.todos.filtered_by(be.visible).should(have.size(0))
         return self
 
-
-class TodoMvcAssert:
-
-    def list_should_be(self, *names: str):
-        todos.should(have.exact_texts(*names))
+    def completed_todos(self, *names: str):
+        self.todos.filtered_by(have.css_class('completed'))\
+            .should(have.exact_texts(*names))
         return self
 
-    def items_left_should_be(self, amount: int):
-        s('#todo-count strong').should(have.exact_text(str(amount)))
-        return self
-
-    def list_should_be_not(self):
-        todos.filtered_by(be.visible).should(have.size(0))
-        return self
-
-    def completed_todos_should_be(self, *names: str):
-        ss('#todo-list>li.completed').should(have.exact_texts(*names))
-        return self
-
-    def active_todos_should_be(self, *names: str):
-        ss('#todo-list>li:not(.completed)').should(have.exact_texts(*names))
+    def active_todos(self, *names: str):
+        self.todos.filtered_by(have.css_class('active'))\
+            .should(have.exact_texts(*names))
         return self
 
     def clear_completed_hidden(self):
-        clear_completed_button.should(be.not_.visible)
+        self.clear_completed_button.should(be.not_.visible)
         return self
 
     def clear_completed_visible(self):
-        clear_completed_button.should(be.visible)
+        self.clear_completed_button.should(be.visible)
         return self
 
-    def footer_should_be_hidden(self):
-        s('#footer').should(be.not_.visible)
+    def items_left(self, amount: int):
+        s('#todo-count>strong').should(have.exact_text(str(amount)))
         return self

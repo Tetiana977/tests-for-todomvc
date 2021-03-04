@@ -1,6 +1,5 @@
-from tests_for_todomvc.model.todomvc import TodoMvcPrecondition, \
-    TodoMvcAssert, TodoMvcAct
+from tests_for_todomvc.model.todomvc import TodoMvc
 
-app_given = TodoMvcPrecondition()
-app_when = TodoMvcAct()
-app_then = TodoMvcAssert()
+given: TodoMvc = TodoMvc()
+when: TodoMvc = given
+then: TodoMvc = given
