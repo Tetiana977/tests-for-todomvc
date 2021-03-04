@@ -30,7 +30,7 @@ class TodoMvc:
 
     def start_editing(self, name: str, new_text):
         self.todos.element_by(have.exact_text(name)).double_click()
-        return self.todos.element_by(have.css_class('editing')) \
+        return self.todos.element_by(have.css_class('editing'))\
             .element('.edit').with_(set_value_by_js=True).set_value(new_text)
 
     def cancel_editing(self, name: str, new_text):
@@ -46,7 +46,7 @@ class TodoMvc:
         return self
 
     def delete(self, name: str):
-        self.todos.element_by(have.exact_text(name)).hover() \
+        self.todos.element_by(have.exact_text(name)).hover()\
             .element('.destroy').click()
         return self
 
@@ -62,32 +62,32 @@ class TodoMvc:
         self.clear_completed_button.click()
         return self
 
-    def list_is(self, *names: str):
+    def list_should_be(self, *names: str):
         self.todos.should(have.exact_texts(*names))
         return self
 
-    def list_is_empty(self):
-        self.todos.filtered_by(be.visible).should(have.size(0))
+    def list_should_be_empty(self):
+        self.list_should_be()
         return self
 
-    def completed_todos(self, *names: str):
+    def completed_todos_should_be(self, *names: str):
         self.todos.filtered_by(have.css_class('completed'))\
             .should(have.exact_texts(*names))
         return self
 
-    def active_todos(self, *names: str):
+    def active_todos_should_be(self, *names: str):
         self.todos.filtered_by(have.css_class('active'))\
             .should(have.exact_texts(*names))
         return self
 
-    def clear_completed_hidden(self):
+    def clear_completed_should_be_hidden(self):
         self.clear_completed_button.should(be.not_.visible)
         return self
 
-    def clear_completed_visible(self):
+    def clear_completed_should_be_visible(self):
         self.clear_completed_button.should(be.visible)
         return self
 
-    def items_left(self, amount: int):
+    def items_left_should_be(self, amount: int):
         s('#todo-count>strong').should(have.exact_text(str(amount)))
         return self

@@ -6,17 +6,17 @@ def test_create():
 
     when.add()
 
-    then.list_is_empty()
+    then.list_should_be_empty()
 
-    when.add('a', 'b')
+    when.add('a')
 
-    then.list_is('a', 'b')\
-        .items_left(2)
+    then.list_should_be('a')\
+        .items_left_should_be(1)
 
-    when.add('c')
+    when.add('b', 'c')
 
-    then.list_is('a', 'b', 'c')\
-        .items_left(3)
+    then.list_should_be('a', 'b', 'c')\
+        .items_left_should_be(3)
 
 
 def test_edit_by_enter():
@@ -24,8 +24,8 @@ def test_edit_by_enter():
 
     when.edit_by_enter('b', 'b edited')
 
-    then.list_is('a', 'b edited', 'c')\
-        .items_left(3)
+    then.list_should_be('a', 'b edited', 'c')\
+        .items_left_should_be(3)
 
 
 def test_edit_by_focus_change():
@@ -33,8 +33,8 @@ def test_edit_by_focus_change():
 
     when.edit_by_tab('b', 'b edited')
 
-    then.list_is('a', 'b edited', 'c')\
-        .items_left(3)
+    then.list_should_be('a', 'b edited', 'c')\
+        .items_left_should_be(3)
 
 
 def test_cancel_edit_by_escape():
@@ -42,8 +42,8 @@ def test_cancel_edit_by_escape():
 
     when.cancel_editing('b', 'b edited')
 
-    then.list_is('a', 'b', 'c')\
-        .items_left(3)
+    then.list_should_be('a', 'b', 'c')\
+        .items_left_should_be(3)
 
 
 def test_complete():
@@ -51,21 +51,21 @@ def test_complete():
 
     when.toggle('b')
 
-    then.completed_todos('b')\
-        .active_todos('a', 'c')\
-        .items_left(2)\
-        .clear_completed_visible()
+    then.completed_todos_should_be('b')\
+        .active_todos_should_be('a', 'c')\
+        .items_left_should_be(2)\
+        .clear_completed_should_be_visible()
 
 
-def test_complete_all():
+def test_complete_all_with_some_completed():
     given.visit_with('a', 'b', 'c')\
         .toggle('b')
 
     when.toggle_all()
 
-    then.completed_todos('a', 'b', 'c')\
-        .active_todos()\
-        .items_left(0)
+    then.completed_todos_should_be('a', 'b', 'c')\
+        .active_todos_should_be()\
+        .items_left_should_be(0)
 
 
 def test_activate():
@@ -74,16 +74,17 @@ def test_activate():
 
     when.toggle('b')
 
-    then.completed_todos('a', 'c')\
-        .active_todos('b')\
-        .items_left(1)
+    then.completed_todos_should_be('a', 'c')\
+        .active_todos_should_be('b')\
+        .items_left_should_be(1)
 
-    when.toggle('a').toggle('c')
+    when.toggle('a')\
+        .toggle('c')
 
-    then.active_todos('a', 'b', 'c')\
-        .completed_todos()\
-        .items_left(3)\
-        .clear_completed_hidden()
+    then.active_todos_should_be('a', 'b', 'c')\
+        .completed_todos_should_be()\
+        .items_left_should_be(3)\
+        .clear_completed_should_be_hidden()
 
 
 def test_activate_all():
@@ -92,10 +93,10 @@ def test_activate_all():
 
     when.toggle_all()
 
-    then.active_todos('a', 'b', 'c')\
-        .completed_todos()\
-        .items_left(3)\
-        .clear_completed_hidden()
+    then.active_todos_should_be('a', 'b', 'c')\
+        .completed_todos_should_be()\
+        .items_left_should_be(3)\
+        .clear_completed_should_be_hidden()
 
 
 def test_delete():
@@ -103,8 +104,8 @@ def test_delete():
 
     when.delete('b')
 
-    then.list_is('a', 'c')\
-        .items_left(2)
+    then.list_should_be('a', 'c')\
+        .items_left_should_be(2)
 
 
 def test_delete_by_edit():
@@ -112,21 +113,22 @@ def test_delete_by_edit():
 
     when.edit_by_enter('a', '')
 
-    then.list_is('b', 'c')\
-        .items_left(2)
+    then.list_should_be('b', 'c')\
+        .items_left_should_be(2)
 
     when.edit_by_tab('b', '')
 
-    then.list_is('c')\
-        .items_left(1)
+    then.list_should_be('c')\
+        .items_left_should_be(1)
 
 
 def test_clear_completed():
-    given.visit().add('a', 'b', 'c', 'd')\
-        .toggle('b').toggle('d')
+    given.visit_with('a', 'b', 'c', 'd')\
+        .toggle('b')\
+        .toggle('d')
 
     when.clear_completed()
 
-    then.list_is('a', 'c')\
-        .items_left(2)\
-        .clear_completed_hidden()
+    then.list_should_be('a', 'c')\
+        .items_left_should_be(2)\
+        .clear_completed_should_be_hidden()
