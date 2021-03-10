@@ -28,21 +28,21 @@ class TodoMvc:
         self.add(*names)
         return self
 
-    def start_editing(self, name: str, new_text):
+    def start_editing(self, name: str, new_name):
         self.todos.element_by(have.exact_text(name)).double_click()
         return self.todos.element_by(have.css_class('editing'))\
-            .element('.edit').with_(set_value_by_js=True).set_value(new_text)
+            .element('.edit').with_(set_value_by_js=True).set_value(new_name)
 
-    def cancel_editing(self, name: str, new_text):
-        self.start_editing(name, new_text).press_escape()
+    def cancel_editing(self, name: str, new_name):
+        self.start_editing(name, new_name).press_escape()
         return self
 
-    def edit_by_enter(self, name: str, new_text):
-        self.start_editing(name, new_text).press_enter()
+    def edit_by_enter(self, name: str, new_name):
+        self.start_editing(name, new_name).press_enter()
         return self
 
-    def edit_by_tab(self, name: str, new_text):
-        self.start_editing(name, new_text).press_tab()
+    def edit_by_tab(self, name: str, new_name):
+        self.start_editing(name, new_name).press_tab()
         return self
 
     def delete(self, name: str):
